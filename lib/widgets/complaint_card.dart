@@ -12,12 +12,24 @@ class ComplaintCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.all(8),
-      child: ListTile(
-        leading: const Icon(Icons.report_problem),
-        title: Text(complaint.title),
-        subtitle: Text(complaint.description),
+      margin: const EdgeInsets.symmetric(
+        horizontal: 10,
+        vertical: 5,
       ),
+      child: ListTile(
+  leading: const Icon(Icons.report_problem),
+  title: Text(complaint.title),
+  subtitle: Column(
+    crossAxisAlignment: CrossAxisAlignment.start,
+    children: [
+      Text(complaint.description),
+      Text('ID: ${complaint.complaintId}'),
+      Text('Category: ${complaint.category}'),
+      Text('Type: ${complaint.complaintType}'),
+      Text('Status: ${complaint.status}'),
+    ],
+  ),
+),
     );
   }
 }
