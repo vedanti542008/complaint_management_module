@@ -4,10 +4,12 @@ import '../screens/complaint_details_screen.dart';
 
 class ComplaintCard extends StatelessWidget {
   final Complaint complaint;
+  final bool isFaculty;
 
   const ComplaintCard({
     super.key,
     required this.complaint,
+    required this.isFaculty,
   });
 
   Color getStatusColor(String status) {
@@ -35,6 +37,7 @@ class ComplaintCard extends StatelessWidget {
             MaterialPageRoute(
               builder: (context) => ComplaintDetailsScreen(
                 complaint: complaint,
+                isFaculty: isFaculty,
               ),
             ),
           );

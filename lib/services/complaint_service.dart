@@ -51,4 +51,16 @@ class ComplaintService {
       return Complaint.fromMap(doc.data());
     }).toList();
   }
+
+  Future<void> updateComplaintStatus(
+  String complaintId,
+  String newStatus,
+) async {
+  await _firestore
+      .collection('complaints')
+      .doc(complaintId)
+      .update({
+    'status': newStatus,
+  });
+}
 }

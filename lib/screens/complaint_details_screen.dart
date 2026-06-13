@@ -1,12 +1,15 @@
 import 'package:flutter/material.dart';
 import '../models/complaint_model.dart';
+import '../services/complaint_service.dart';
 
 class ComplaintDetailsScreen extends StatelessWidget {
   final Complaint complaint;
+  final bool isFaculty;
 
   const ComplaintDetailsScreen({
     super.key,
     required this.complaint,
+    required this.isFaculty,
   });
 
   @override
@@ -43,6 +46,37 @@ class ComplaintDetailsScreen extends StatelessWidget {
             const SizedBox(height: 10),
 
             Text('Status: ${complaint.status}'),
+            const SizedBox(height: 10),
+
+            if (isFaculty)
+          DropdownButton<String>(
+            value: complaint.status,
+            items: const [
+              DropdownMenuItem(
+                value: 'Pending',
+                child: Text('Pending'),
+              ),
+              DropdownMenuItem(
+                value: 'In Progress',
+                child: Text('In Progress'),
+              ),
+              DropdownMenuItem(
+                value: 'Resolved',
+                child: Text('Resolved'),
+              ),
+            ],
+            onChanged: (value) async {
+              await ComplaintService()
+                  .updateComplaintStatus(
+                complaint.complaintId,
+                value!,
+              );
+
+              if (context.mounted) {
+                Navigator.pop(context);
+              }
+            },
+          ),
             const SizedBox(height: 10),
 
             Text(

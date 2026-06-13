@@ -46,7 +46,9 @@ class DashboardScreen extends StatelessWidget {
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => const ComplaintListScreen(),
+        builder: (context) => const ComplaintListScreen(
+          isFaculty: false,
+        ),
       ),
     );
   },

@@ -41,6 +41,7 @@ class FacultyDashboard extends StatelessWidget {
               MaterialPageRoute(
                 builder: (_) => const ComplaintListScreen(
   showOnlyMyComplaints: false,
+  isFaculty: true,
 ),
               ),
             );
