@@ -139,14 +139,15 @@ final TextEditingController titleController =
   }
 
   final complaint = Complaint(
-    complaintId: DateTime.now().millisecondsSinceEpoch.toString(),
-    title: title,
-    description: description,
-    category: selectedCategory,
-    complaintType: selectedType,
-    status: 'Pending',
-    createdAt: DateTime.now(),
-  );
+  complaintId: DateTime.now().millisecondsSinceEpoch.toString(),
+  title: title,
+  description: description,
+  category: selectedCategory,
+  complaintType: selectedType,
+  status: 'Pending',
+  createdAt: DateTime.now(),
+  userId: '',
+);
 
   await ComplaintService()
     .addComplaint(complaint);

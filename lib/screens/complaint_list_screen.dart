@@ -4,7 +4,12 @@ import '../widgets/complaint_card.dart';
 import '../services/complaint_service.dart';
 
 class ComplaintListScreen extends StatelessWidget {
-  const ComplaintListScreen({super.key});
+  final bool showOnlyMyComplaints;
+
+  const ComplaintListScreen({
+    super.key,
+    this.showOnlyMyComplaints = false,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -14,8 +19,10 @@ class ComplaintListScreen extends StatelessWidget {
         centerTitle: true,
       ),
       body: FutureBuilder<List<Complaint>>(
-        future: ComplaintService().getComplaints(),
-        builder: (context, snapshot) {
+      future: showOnlyMyComplaints
+          ? ComplaintService().getMyComplaints()
+          : ComplaintService().getComplaints(),        
+          builder: (context, snapshot) {
 
           if (snapshot.connectionState ==
               ConnectionState.waiting) {

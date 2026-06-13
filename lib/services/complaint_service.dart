@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import '../models/complaint_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ComplaintService {
 
@@ -21,20 +22,33 @@ class ComplaintService {
       'status': complaint.status,
       'createdAt':
           complaint.createdAt.toIso8601String(),
+      'userId':
+          FirebaseAuth.instance.currentUser!.uid,
     });
   }
 
   Future<List<Complaint>> getComplaints() async {
 
-  final snapshot =
-      await _firestore.collection('complaints').get();
+    final snapshot =
+        await _firestore.collection('complaints').get();
 
-  for (var doc in snapshot.docs) {
-    print(doc.data());
+    return snapshot.docs.map((doc) {
+      return Complaint.fromMap(doc.data());
+    }).toList();
   }
 
-  return snapshot.docs.map((doc) {
-    return Complaint.fromMap(doc.data());
-  }).toList();
-}
+  Future<List<Complaint>> getMyComplaints() async {
+
+    String uid =
+        FirebaseAuth.instance.currentUser!.uid;
+
+    final snapshot = await _firestore
+        .collection('complaints')
+        .where('userId', isEqualTo: uid)
+        .get();
+
+    return snapshot.docs.map((doc) {
+      return Complaint.fromMap(doc.data());
+    }).toList();
+  }
 }
