@@ -63,4 +63,12 @@ class ComplaintService {
     'status': newStatus,
   });
 }
+Future<void> deleteComplaint(
+  String complaintId,
+) async {
+  await _firestore
+      .collection('complaints')
+      .doc(complaintId)
+      .delete();
+}
 }

@@ -78,8 +78,53 @@ class ComplaintDetailsScreen extends StatelessWidget {
             },
           ),
             const SizedBox(height: 10),
+if (isFaculty)
+  ElevatedButton.icon(
+    icon: const Icon(Icons.delete),
+    label: const Text('Delete Complaint'),
+    style: ElevatedButton.styleFrom(
+      backgroundColor: Colors.red,
+      foregroundColor: Colors.white,
+    ),
+    onPressed: () async {
+      bool? confirm = await showDialog<bool>(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: const Text('Delete Complaint'),
+            content: const Text(
+              'Are you sure you want to delete this complaint?',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context, false);
+                },
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(context, true);
+                },
+                child: const Text('Delete'),
+              ),
+            ],
+          );
+        },
+      );
 
-            Text(
+      if (confirm == true) {
+        await ComplaintService().deleteComplaint(
+          complaint.complaintId,
+        );
+
+        if (context.mounted) {
+          Navigator.pop(context);
+        }
+      }
+    },
+  ),
+         Text(
               'Created At: ${complaint.createdAt}',
             ),
           ],
