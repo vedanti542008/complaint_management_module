@@ -72,54 +72,127 @@ int other = complaints.where((doc) {
 
           return Padding(
             padding: const EdgeInsets.all(20),
-            child: Column(
+            child: SingleChildScrollView(
+  child: Column(
               crossAxisAlignment:
                   CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'Total Complaints: $total',
-                  style: const TextStyle(
-                    fontSize: 20,
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+               children: [
 
-                const SizedBox(height: 15),
-
-                Text(
-                  'Pending: $pending',
-                  style: const TextStyle(fontSize: 18),
-                ),
-
-                Text(
-                  'In Progress: $inProgress',
-                  style: const TextStyle(fontSize: 18),
-                ),
-
-                Text(
-                  'Resolved: $resolved',
-                  style: const TextStyle(fontSize: 18),
-                ),
-
-                const SizedBox(height: 30),
-
-const Text(
-  'Category Breakdown',
-  style: TextStyle(
-    fontSize: 20,
-    fontWeight: FontWeight.bold,
+  Card(
+color: Colors.purple.shade100,
+    child: ListTile(
+      leading: const Icon(Icons.list_alt),
+      title: const Text('Total Complaints'),
+      trailing: Text(
+        '$total',
+        style: const TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    ),
   ),
-),
 
-const SizedBox(height: 10),
+  Card(
+    color: Colors.orange.shade100,
+    child: ListTile(
+      leading: const Icon(Icons.pending_actions),
+      title: const Text('Pending'),
+      trailing: Text(
+        '$pending',
+        style: const TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    ),
+  ),
 
-Text('Infrastructure: $infrastructure'),
-Text('Academic: $academic'),
-Text('Hostel: $hostel'),
-Text('Canteen: $canteen'),
-Text('Transport: $transport'),
-Text('Other: $other'),
-              ],
+  Card(
+color: Colors.blue.shade100,
+    child: ListTile(
+      leading: const Icon(Icons.autorenew),
+      title: const Text('In Progress'),
+      trailing: Text(
+        '$inProgress',
+        style: const TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    ),
+  ),
+
+  Card(
+    color: Colors.green.shade100,
+    child: ListTile(
+      leading: const Icon(Icons.check_circle),
+      title: const Text('Resolved'),
+      trailing: Text(
+        '$resolved',
+        style: const TextStyle(
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+        ),
+      ),
+    ),
+  ),
+
+  const SizedBox(height: 30),
+
+  const Text(
+    'Category Breakdown',
+    style: TextStyle(
+      fontSize: 22,
+      fontWeight: FontWeight.bold,
+    ),
+  ),
+
+  const SizedBox(height: 10),
+
+  Card(
+    child: ListTile(
+      title: const Text('Infrastructure'),
+      trailing: Text('$infrastructure'),
+    ),
+  ),
+
+  Card(
+    child: ListTile(
+      title: const Text('Academic'),
+      trailing: Text('$academic'),
+    ),
+  ),
+
+  Card(
+    child: ListTile(
+      title: const Text('Hostel'),
+      trailing: Text('$hostel'),
+    ),
+  ),
+
+  Card(
+    child: ListTile(
+      title: const Text('Canteen'),
+      trailing: Text('$canteen'),
+    ),
+  ),
+
+  Card(
+    child: ListTile(
+      title: const Text('Transport'),
+      trailing: Text('$transport'),
+    ),
+  ),
+
+  Card(
+    child: ListTile(
+      title: const Text('Other'),
+      trailing: Text('$other'),
+    ),
+  ),
+],
+            ),
             ),
           );
         },

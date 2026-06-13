@@ -16,21 +16,32 @@ class ComplaintCard extends StatelessWidget {
     switch (status) {
       case 'Resolved':
         return Colors.green;
+
       case 'In Progress':
         return Colors.blue;
-      default:
+        
+      case 'Pending':
         return Colors.orange;
+
+      default:
+        return Colors.grey;
     }
   }
 
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 4,
       margin: const EdgeInsets.symmetric(
         horizontal: 10,
-        vertical: 5,
+        vertical: 6,
+      ),
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
       ),
       child: ListTile(
+        contentPadding: const EdgeInsets.all(12),
+
         onTap: () {
           Navigator.push(
             context,
@@ -42,37 +53,58 @@ class ComplaintCard extends StatelessWidget {
             ),
           );
         },
-        leading: const Icon(Icons.report_problem),
-        title: Text(complaint.title),
+
+        leading: CircleAvatar(
+          backgroundColor: getStatusColor(
+            complaint.status,
+          ),
+          child: const Icon(
+            Icons.report_problem,
+            color: Colors.white,
+          ),
+        ),
+
+        title: Text(
+          complaint.title,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+
         subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          crossAxisAlignment:
+              CrossAxisAlignment.start,
           children: [
+            const SizedBox(height: 8),
+
             Text(complaint.description),
-            Text('ID: ${complaint.complaintId}'),
-            Text('Category: ${complaint.category}'),
-            Text('Type: ${complaint.complaintType}'),
 
-            const SizedBox(height: 5),
+            const SizedBox(height: 6),
 
-            Container(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 8,
-                vertical: 4,
-              ),
-              decoration: BoxDecoration(
-                color: getStatusColor(
-                  complaint.status,
-                ).withOpacity(0.2),
-                borderRadius: BorderRadius.circular(12),
-              ),
-              child: Text(
+            Text(
+              'ID: ${complaint.complaintId}',
+            ),
+
+            Text(
+              'Category: ${complaint.category}',
+            ),
+
+            Text(
+              'Type: ${complaint.complaintType}',
+            ),
+
+            const SizedBox(height: 10),
+
+            Chip(
+              label: Text(
                 complaint.status,
-                style: TextStyle(
-                  color: getStatusColor(
-                    complaint.status,
-                  ),
+                style: const TextStyle(
+                  color: Colors.white,
                   fontWeight: FontWeight.bold,
                 ),
+              ),
+              backgroundColor: getStatusColor(
+                complaint.status,
               ),
             ),
           ],
