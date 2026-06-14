@@ -202,6 +202,43 @@ class _ComplaintListScreenState
                 );
 
 
+                if (searchQuery.isNotEmpty) {
+                  return Column(
+                    children: [
+                      Container(
+                        width: double.infinity,
+                        padding: const EdgeInsets.all(10),
+                        color: Colors.blue.shade50,
+                        child: const Text(
+                          'Showing results from all complaint statuses',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            fontWeight: FontWeight.w500,
+                          ),
+                        ),
+                      ),
+
+                      Expanded(
+                        child: filteredComplaints.isEmpty
+                            ? const Center(
+                                child: Text(
+                                  'No complaints found',
+                                ),
+                              )
+                            : ListView.builder(
+                                itemCount: filteredComplaints.length,
+                                itemBuilder: (context, index) {
+                                  return ComplaintCard(
+                                    complaint: filteredComplaints[index],
+                                    isFaculty: widget.isFaculty,
+                                  );
+                                },
+                              ),
+                      ),
+                    ],
+                  );
+                }
+
                 return TabBarView(
                   controller: tabController,
                   children: [
@@ -213,16 +250,11 @@ class _ComplaintListScreenState
                             ),
                           )
                         : ListView.builder(
-                            itemCount:
-                                pendingComplaints.length,
-                            itemBuilder:
-                                (context, index) {
+                            itemCount: pendingComplaints.length,
+                            itemBuilder: (context, index) {
                               return ComplaintCard(
-                                complaint:
-                                    pendingComplaints[
-                                        index],
-                                isFaculty:
-                                    widget.isFaculty,
+                                complaint: pendingComplaints[index],
+                                isFaculty: widget.isFaculty,
                               );
                             },
                           ),
@@ -235,17 +267,11 @@ class _ComplaintListScreenState
                             ),
                           )
                         : ListView.builder(
-                            itemCount:
-                                inProgressComplaints
-                                    .length,
-                            itemBuilder:
-                                (context, index) {
+                            itemCount: inProgressComplaints.length,
+                            itemBuilder: (context, index) {
                               return ComplaintCard(
-                                complaint:
-                                    inProgressComplaints[
-                                        index],
-                                isFaculty:
-                                    widget.isFaculty,
+                                complaint: inProgressComplaints[index],
+                                isFaculty: widget.isFaculty,
                               );
                             },
                           ),
@@ -258,17 +284,11 @@ class _ComplaintListScreenState
                             ),
                           )
                         : ListView.builder(
-                            itemCount:
-                                resolvedComplaints
-                                    .length,
-                            itemBuilder:
-                                (context, index) {
+                            itemCount: resolvedComplaints.length,
+                            itemBuilder: (context, index) {
                               return ComplaintCard(
-                                complaint:
-                                    resolvedComplaints[
-                                        index],
-                                isFaculty:
-                                    widget.isFaculty,
+                                complaint: resolvedComplaints[index],
+                                isFaculty: widget.isFaculty,
                               );
                             },
                           ),
