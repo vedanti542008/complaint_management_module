@@ -219,7 +219,7 @@ class _ComplaintDetailsScreenState
               const SizedBox(height: 10),
 
               DropdownButtonFormField<String>(
-                value: complaint.status,
+                initialValue: complaint.status,
                 decoration: const InputDecoration(
                   border: OutlineInputBorder(),
                 ),
