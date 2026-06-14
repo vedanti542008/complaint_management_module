@@ -7,6 +7,7 @@ class Complaint {
   final String status;
   final DateTime createdAt;
   final String userId;
+  final String facultyRemark;
 
   Complaint({
     required this.complaintId,
@@ -17,18 +18,34 @@ class Complaint {
     required this.status,
     required this.createdAt,
     required this.userId,
+    required this.facultyRemark,
   });
 
   factory Complaint.fromMap(Map<String, dynamic> map) {
-  return Complaint(
-  complaintId: map['complaintId'] ?? '',
-  title: map['title'] ?? '',
-  description: map['description'] ?? '',
-  category: map['category'] ?? '',
-  complaintType: map['complaintType'] ?? '',
-  status: map['status'] ?? '',
-  createdAt: DateTime.parse(map['createdAt']),
-  userId: map['userId'] ?? '',
-);
-}
+    return Complaint(
+      complaintId: map['complaintId'] ?? '',
+      title: map['title'] ?? '',
+      description: map['description'] ?? '',
+      category: map['category'] ?? '',
+      complaintType: map['complaintType'] ?? '',
+      status: map['status'] ?? '',
+      createdAt: DateTime.parse(map['createdAt']),
+      userId: map['userId'] ?? '',
+      facultyRemark: map['facultyRemark'] ?? '',
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      'complaintId': complaintId,
+      'title': title,
+      'description': description,
+      'category': category,
+      'complaintType': complaintType,
+      'status': status,
+      'createdAt': createdAt.toIso8601String(),
+      'userId': userId,
+      'facultyRemark': facultyRemark,
+    };
+  }
 }

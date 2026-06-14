@@ -11,192 +11,274 @@ class ComplaintListScreen extends StatefulWidget {
     super.key,
     this.showOnlyMyComplaints = false,
     required this.isFaculty,
-    
   });
 
   @override
-  State<ComplaintListScreen> createState() => _ComplaintListScreenState();
+  State<ComplaintListScreen> createState() =>
+      _ComplaintListScreenState();
 }
 
-class _ComplaintListScreenState extends State<ComplaintListScreen> {
-final TextEditingController searchController =
-    TextEditingController();
+class _ComplaintListScreenState
+    extends State<ComplaintListScreen>
+    with SingleTickerProviderStateMixin {
+  late TabController tabController;
 
-String searchQuery = '';
-String selectedStatus = 'All';
-String selectedCategory = 'All';
+  final TextEditingController searchController =
+      TextEditingController();
+
+  String searchQuery = '';
+  String selectedCategory = 'All';
+
+  @override
+  void initState() {
+    super.initState();
+    tabController = TabController(
+      length: 3,
+      vsync: this,
+    );
+  }
+
+  @override
+  void dispose() {
+    tabController.dispose();
+    searchController.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text('Complaints'),
         centerTitle: true,
-      ),
-body: Column(
-  children: [
-    Padding(
-      padding: const EdgeInsets.all(10),
-      child: TextField(
-        controller: searchController,
-        decoration: const InputDecoration(
-          hintText: 'Search by title or ID',
-          prefixIcon: Icon(Icons.search),
-          border: OutlineInputBorder(),
+        bottom: TabBar(
+          controller: tabController,
+          tabs: const [
+            Tab(text: 'Pending'),
+            Tab(text: 'In Progress'),
+            Tab(text: 'Resolved'),
+          ],
         ),
-        onChanged: (value) {
-          setState(() {
-            searchQuery = value.toLowerCase();
-          });
-        },
       ),
-    ),
-    Padding(
-  padding: const EdgeInsets.symmetric(
-    horizontal: 10,
-  ),
-  child: DropdownButtonFormField<String>(
-    value: selectedStatus,
-    decoration: const InputDecoration(
-      labelText: 'Filter by Status',
-      border: OutlineInputBorder(),
-    ),
-    items: const [
-      DropdownMenuItem(
-        value: 'All',
-        child: Text('All'),
-      ),
-      DropdownMenuItem(
-        value: 'Pending',
-        child: Text('Pending'),
-      ),
-      DropdownMenuItem(
-        value: 'In Progress',
-        child: Text('In Progress'),
-      ),
-      DropdownMenuItem(
-        value: 'Resolved',
-        child: Text('Resolved'),
-      ),
-    ],
-    onChanged: (value) {
-      setState(() {
-        selectedStatus = value!;
-      });
-    },
-  ),
-),
-Padding(
-  padding: const EdgeInsets.symmetric(
-    horizontal: 10,
-    vertical: 10,
-  ),
-  child: DropdownButtonFormField<String>(
-    value: selectedCategory,
-    decoration: const InputDecoration(
-      labelText: 'Filter by Category',
-      border: OutlineInputBorder(),
-    ),
-    items: const [
-      DropdownMenuItem(
-        value: 'All',
-        child: Text('All'),
-      ),
-      DropdownMenuItem(
-        value: 'Infrastructure',
-        child: Text('Infrastructure'),
-      ),
-      DropdownMenuItem(
-        value: 'Academic',
-        child: Text('Academic'),
-      ),
-      DropdownMenuItem(
-        value: 'Hostel',
-        child: Text('Hostel'),
-      ),
-      DropdownMenuItem(
-        value: 'Canteen',
-        child: Text('Canteen'),
-      ),
-      DropdownMenuItem(
-        value: 'Transport',
-        child: Text('Transport'),
-      ),
-      DropdownMenuItem(
-        value: 'Other',
-        child: Text('Other'),
-      ),
-    ],
-    onChanged: (value) {
-      setState(() {
-        selectedCategory = value!;
-      });
-    },
-  ),
-),
-
-    Expanded(
-      child: FutureBuilder<List<Complaint>>(        future: widget.showOnlyMyComplaints
-            ? ComplaintService().getMyComplaints()
-            : ComplaintService().getComplaints(),
-        builder: (context, snapshot) {
-          if (snapshot.connectionState ==
-              ConnectionState.waiting) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          }
-
-          if (snapshot.hasError) {
-            return Center(
-              child: Text(
-                'Error: ${snapshot.error}',
+      body: Column(
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(10),
+            child: TextField(
+              controller: searchController,
+              decoration: const InputDecoration(
+                hintText: 'Search by title or ID',
+                prefixIcon: Icon(Icons.search),
+                border: OutlineInputBorder(),
               ),
-            );
-          }
+              onChanged: (value) {
+                setState(() {
+                  searchQuery = value.toLowerCase();
+                });
+              },
+            ),
+          ),
 
-          final complaints = snapshot.data ?? [];
-                      final filteredComplaints =
-                complaints.where((complaint) {
+          Padding(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 10,
+              vertical: 10,
+            ),
+            child: DropdownButtonFormField<String>(
+              initialValue: selectedCategory,
+              decoration: const InputDecoration(
+                labelText: 'Filter by Category',
+                border: OutlineInputBorder(),
+              ),
+              items: const [
+                DropdownMenuItem(
+                  value: 'All',
+                  child: Text('All'),
+                ),
+                DropdownMenuItem(
+                  value: 'Infrastructure',
+                  child: Text('Infrastructure'),
+                ),
+                DropdownMenuItem(
+                  value: 'Academic',
+                  child: Text('Academic'),
+                ),
+                DropdownMenuItem(
+                  value: 'Hostel',
+                  child: Text('Hostel'),
+                ),
+                DropdownMenuItem(
+                  value: 'Canteen',
+                  child: Text('Canteen'),
+                ),
+                DropdownMenuItem(
+                  value: 'Transport',
+                  child: Text('Transport'),
+                ),
+                DropdownMenuItem(
+                  value: 'Other',
+                  child: Text('Other'),
+                ),
+              ],
+              onChanged: (value) {
+                setState(() {
+                  selectedCategory = value!;
+                });
+              },
+            ),
+          ),
 
-              bool matchesSearch =
-                  complaint.title
-                          .toLowerCase()
-                          .contains(searchQuery) ||
-                  complaint.complaintId
-                          .toLowerCase()
-                          .contains(searchQuery);
+          Expanded(
+            child: StreamBuilder<List<Complaint>>(
+                  stream: widget.showOnlyMyComplaints
+                  ? ComplaintService().getMyComplaintsStream()
+                  : ComplaintService().getComplaintsStream(),
+                  builder: (context, snapshot) {
+                if (snapshot.connectionState ==
+                    ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
 
-              bool matchesStatus =
-                  selectedStatus == 'All' ||
-                  complaint.status == selectedStatus;
+                if (snapshot.hasError) {
+                  return Center(
+                    child: Text(
+                      'Error: ${snapshot.error}',
+                    ),
+                  );
+                }
 
-              bool matchesCategory =
-                  selectedCategory == 'All' ||
-                  complaint.category == selectedCategory;
+                final complaints = snapshot.data ?? [];
 
-              return matchesSearch && matchesStatus && matchesCategory;
+                final filteredComplaints =
+                    complaints.where((complaint) {
+                  bool matchesSearch =
+                      complaint.title
+                              .toLowerCase()
+                              .contains(searchQuery) ||
+                          complaint.complaintId
+                              .toLowerCase()
+                              .contains(searchQuery);
 
-            }).toList();
+                  bool matchesCategory =
+                      selectedCategory == 'All' ||
+                          complaint.category ==
+                              selectedCategory;
 
-                      if (filteredComplaints.isEmpty) {
-              return const Center(
-                child: Text('No complaints found'),
-              );
-            }
+                  return matchesSearch &&
+                      matchesCategory;
+                }).toList();
 
-                      return ListView.builder(
-            itemCount: filteredComplaints.length,            itemBuilder: (context, index) {
-                          return ComplaintCard(
-                            complaint: filteredComplaints[index],
-                            isFaculty: widget.isFaculty,
-              );
-            },
-          );
-        },
+                final pendingComplaints =
+                    filteredComplaints.where(
+                  (complaint) =>
+                      complaint.status == 'Pending',
+                ).toList();
+
+                final inProgressComplaints =
+                    filteredComplaints.where(
+                  (complaint) =>
+                      complaint.status == 'In Progress',
+                ).toList();
+
+                final resolvedComplaints =
+                    filteredComplaints.where(
+                  (complaint) =>
+                      complaint.status == 'Resolved',
+                ).toList();
+
+
+                pendingComplaints.sort(
+                  (a, b) => a.createdAt.compareTo(b.createdAt),
+                );
+
+                inProgressComplaints.sort(
+                  (a, b) => a.createdAt.compareTo(b.createdAt),
+                );
+
+                resolvedComplaints.sort(
+                  (a, b) => b.createdAt.compareTo(a.createdAt),
+                );
+
+
+                return TabBarView(
+                  controller: tabController,
+                  children: [
+                    // Pending
+                    pendingComplaints.isEmpty
+                        ? const Center(
+                            child: Text(
+                              'No pending complaints',
+                            ),
+                          )
+                        : ListView.builder(
+                            itemCount:
+                                pendingComplaints.length,
+                            itemBuilder:
+                                (context, index) {
+                              return ComplaintCard(
+                                complaint:
+                                    pendingComplaints[
+                                        index],
+                                isFaculty:
+                                    widget.isFaculty,
+                              );
+                            },
+                          ),
+
+                    // In Progress
+                    inProgressComplaints.isEmpty
+                        ? const Center(
+                            child: Text(
+                              'No complaints in progress',
+                            ),
+                          )
+                        : ListView.builder(
+                            itemCount:
+                                inProgressComplaints
+                                    .length,
+                            itemBuilder:
+                                (context, index) {
+                              return ComplaintCard(
+                                complaint:
+                                    inProgressComplaints[
+                                        index],
+                                isFaculty:
+                                    widget.isFaculty,
+                              );
+                            },
+                          ),
+
+                    // Resolved
+                    resolvedComplaints.isEmpty
+                        ? const Center(
+                            child: Text(
+                              'No resolved complaints',
+                            ),
+                          )
+                        : ListView.builder(
+                            itemCount:
+                                resolvedComplaints
+                                    .length,
+                            itemBuilder:
+                                (context, index) {
+                              return ComplaintCard(
+                                complaint:
+                                    resolvedComplaints[
+                                        index],
+                                isFaculty:
+                                    widget.isFaculty,
+                              );
+                            },
+                          ),
+                  ],
+                );
+              },
+            ),
+          ),
+        ],
       ),
-    ),
-  ],
-),
-  );
+    );
   }
 }

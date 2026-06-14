@@ -26,9 +26,36 @@ class FacultyDashboard extends StatelessWidget {
         title: const Text('Faculty Dashboard'),
         actions: [
           IconButton(
-            onPressed: () => logout(context),
-            icon: const Icon(Icons.logout),
-          ),
+  tooltip: 'Logout',
+          icon: const Icon(Icons.logout),
+          onPressed: () async {
+            bool? confirm = await showDialog<bool>(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text('Logout'),
+                content: const Text(
+                  'Are you sure you want to logout?',
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () =>
+                        Navigator.pop(context, false),
+                    child: const Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () =>
+                        Navigator.pop(context, true),
+                    child: const Text('Logout'),
+                  ),
+                ],
+              ),
+            );
+
+            if (confirm == true) {
+              logout(context);
+            }
+          },
+        ),
         ],
       ),
       body: Padding(
@@ -37,8 +64,9 @@ class FacultyDashboard extends StatelessWidget {
           children: [
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
-                child: const Text('View Complaints'),
+              child: ElevatedButton.icon(
+  icon: const Icon(Icons.list_alt),
+  label: const Text('View Complaints'),
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -57,8 +85,9 @@ class FacultyDashboard extends StatelessWidget {
 
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
-                child: const Text('Analytics'),
+              child: ElevatedButton.icon(
+  icon: const Icon(Icons.analytics_outlined),
+  label: const Text('Analytics'),
                 onPressed: () {
                   Navigator.push(
                     context,

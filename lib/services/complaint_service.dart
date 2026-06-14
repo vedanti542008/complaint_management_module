@@ -11,20 +11,21 @@ class ComplaintService {
       Complaint complaint) async {
 
     await _firestore
-        .collection('complaints')
-        .doc(complaint.complaintId)
-        .set({
-      'complaintId': complaint.complaintId,
-      'title': complaint.title,
-      'description': complaint.description,
-      'category': complaint.category,
-      'complaintType': complaint.complaintType,
-      'status': complaint.status,
-      'createdAt':
-          complaint.createdAt.toIso8601String(),
-      'userId':
-          FirebaseAuth.instance.currentUser!.uid,
-    });
+    .collection('complaints')
+    .doc(complaint.complaintId)
+    .set({
+  'complaintId': complaint.complaintId,
+  'title': complaint.title,
+  'description': complaint.description,
+  'category': complaint.category,
+  'complaintType': complaint.complaintType,
+  'status': complaint.status,
+  'createdAt':
+      complaint.createdAt.toIso8601String(),
+  'userId':
+      FirebaseAuth.instance.currentUser!.uid,
+  'facultyRemark': complaint.facultyRemark,
+});
   }
 
   Future<List<Complaint>> getComplaints() async {
@@ -63,6 +64,17 @@ class ComplaintService {
     'status': newStatus,
   });
 }
+Future<void> updateFacultyRemark(
+  String complaintId,
+  String remark,
+) async {
+  await _firestore
+      .collection('complaints')
+      .doc(complaintId)
+      .update({
+    'facultyRemark': remark,
+  });
+}
 Future<void> deleteComplaint(
   String complaintId,
 ) async {
@@ -70,5 +82,29 @@ Future<void> deleteComplaint(
       .collection('complaints')
       .doc(complaintId)
       .delete();
+}
+Stream<List<Complaint>> getComplaintsStream() {
+  return _firestore
+      .collection('complaints')
+      .snapshots()
+      .map((snapshot) {
+    return snapshot.docs.map((doc) {
+      return Complaint.fromMap(doc.data());
+    }).toList();
+  });
+}
+
+Stream<List<Complaint>> getMyComplaintsStream() {
+  String uid = FirebaseAuth.instance.currentUser!.uid;
+
+  return _firestore
+      .collection('complaints')
+      .where('userId', isEqualTo: uid)
+      .snapshots()
+      .map((snapshot) {
+    return snapshot.docs.map((doc) {
+      return Complaint.fromMap(doc.data());
+    }).toList();
+  });
 }
 }

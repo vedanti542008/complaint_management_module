@@ -12,11 +12,10 @@ class ComplaintFormScreen extends StatefulWidget {
 
 class _ComplaintFormScreenState
     extends State<ComplaintFormScreen> {
-
   String selectedCategory = 'Infrastructure';
   String selectedType = 'Individual';
 
-final TextEditingController titleController =
+  final TextEditingController titleController =
       TextEditingController();
 
   final TextEditingController descriptionController =
@@ -29,15 +28,15 @@ final TextEditingController titleController =
         title: const Text('Register Complaint'),
         centerTitle: true,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-
             TextField(
               controller: titleController,
               decoration: const InputDecoration(
                 labelText: 'Complaint Title',
+                prefixIcon: Icon(Icons.title),
                 border: OutlineInputBorder(),
               ),
             ),
@@ -45,10 +44,11 @@ final TextEditingController titleController =
             const SizedBox(height: 20),
 
             TextField(
-                controller: descriptionController,
-                maxLines: 4,
-                decoration: const InputDecoration(
+              controller: descriptionController,
+              maxLines: 4,
+              decoration: const InputDecoration(
                 labelText: 'Complaint Description',
+                prefixIcon: Icon(Icons.description),
                 border: OutlineInputBorder(),
               ),
             ),
@@ -56,9 +56,10 @@ final TextEditingController titleController =
             const SizedBox(height: 20),
 
             DropdownButtonFormField<String>(
-              value: selectedCategory,
+              initialValue: selectedCategory,
               decoration: const InputDecoration(
                 labelText: 'Category',
+                prefixIcon: Icon(Icons.category),
                 border: OutlineInputBorder(),
               ),
               items: const [
@@ -97,9 +98,10 @@ final TextEditingController titleController =
             const SizedBox(height: 20),
 
             DropdownButtonFormField<String>(
-              value: selectedType,
+              initialValue: selectedType,
               decoration: const InputDecoration(
                 labelText: 'Complaint Type',
+                prefixIcon: Icon(Icons.people),
                 border: OutlineInputBorder(),
               ),
               items: const [
@@ -119,53 +121,71 @@ final TextEditingController titleController =
               },
             ),
 
-            const SizedBox(height: 20),
+            const SizedBox(height: 30),
 
             SizedBox(
-  width: double.infinity,
-  child: ElevatedButton(
-    onPressed: () async {
+              width: double.infinity,
+              height: 50,
+              child: ElevatedButton.icon(
+                icon: const Icon(Icons.send),
+                label: const Text(
+                  'Submit Complaint',
+                  style: TextStyle(
+                    fontSize: 16,
+                  ),
+                ),
+                onPressed: () async {
+                  String title =
+                      titleController.text.trim();
 
-  String title = titleController.text.trim();
-  String description = descriptionController.text.trim();
+                  String description =
+                      descriptionController.text.trim();
 
-  if (title.isEmpty || description.isEmpty) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Please fill all fields'),
-      ),
-    );
-    return;
-  }
+                  if (title.isEmpty ||
+                      description.isEmpty) {
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Please fill all fields',
+                        ),
+                      ),
+                    );
+                    return;
+                  }
+                  final complaint = Complaint(
+                    complaintId: DateTime.now()
+                        .millisecondsSinceEpoch
+                        .toString(),
+                    title: title,
+                    description: description,
+                    category: selectedCategory,
+                    complaintType: selectedType,
+                    status: 'Pending',
+                    createdAt: DateTime.now(),
+                    userId: '',
+                    facultyRemark: '',
+                  );
 
-  final complaint = Complaint(
-  complaintId: DateTime.now().millisecondsSinceEpoch.toString(),
-  title: title,
-  description: description,
-  category: selectedCategory,
-  complaintType: selectedType,
-  status: 'Pending',
-  createdAt: DateTime.now(),
-  userId: '',
-);
+                  await ComplaintService()
+                      .addComplaint(complaint);
 
-  await ComplaintService()
-    .addComplaint(complaint);
+                  titleController.clear();
+                  descriptionController.clear();
 
-  titleController.clear();
-  descriptionController.clear();
-
-  ScaffoldMessenger.of(context).showSnackBar(
-    const SnackBar(
-      content: Text(
-        'Complaint Submitted Successfully!',
-      ),
-    ),
-  );
-},
-    child: const Text('Submit Complaint'),
-  ),
-),
+                  if (context.mounted) {
+                    ScaffoldMessenger.of(context)
+                        .showSnackBar(
+                      const SnackBar(
+                        content: Text(
+                          'Complaint Submitted Successfully!',
+                        ),
+                      ),
+                    );
+                  }
+                },
+              ),
+            ),
           ],
         ),
       ),

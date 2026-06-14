@@ -26,9 +26,36 @@ class StudentDashboard extends StatelessWidget {
         title: const Text('Student Dashboard'),
         actions: [
           IconButton(
-            onPressed: () => logout(context),
-            icon: const Icon(Icons.logout),
-          ),
+          tooltip: 'Logout',
+          icon: const Icon(Icons.logout),
+          onPressed: () async {
+            bool? confirm = await showDialog<bool>(
+              context: context,
+              builder: (context) => AlertDialog(
+                title: const Text('Logout'),
+                content: const Text(
+                  'Are you sure you want to logout?',
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () =>
+                        Navigator.pop(context, false),
+                    child: const Text('Cancel'),
+                  ),
+                  TextButton(
+                    onPressed: () =>
+                        Navigator.pop(context, true),
+                    child: const Text('Logout'),
+                  ),
+                ],
+              ),
+            );
+
+            if (confirm == true) {
+              logout(context);
+            }
+          },
+        ),
         ],
       ),
       body: Padding(
@@ -37,10 +64,9 @@ class StudentDashboard extends StatelessWidget {
           children: [
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
-                child: const Text(
-                  'Register Complaint',
-                ),
+              child: ElevatedButton.icon(
+  icon: const Icon(Icons.add_circle_outline),
+  label: const Text('Register Complaint'),
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -57,10 +83,9 @@ class StudentDashboard extends StatelessWidget {
 
             SizedBox(
               width: double.infinity,
-              child: ElevatedButton(
-                child: const Text(
-                  'View Complaints',
-                ),
+              child: ElevatedButton.icon(
+  icon: const Icon(Icons.list_alt),
+  label: const Text('View Complaints'),
                 onPressed: () {
                   Navigator.push(
                     context,
